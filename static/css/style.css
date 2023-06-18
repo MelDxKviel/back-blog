@@ -1,0 +1,46 @@
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.navbar {
+  margin-bottom: 15px;
+}
+
+.nav-item {
+  padding: 5px;
+}
+
+.post {
+  margin-top: 15px;
+}
+
+.comment {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.post-title {
+  text-decoration: none;
+  color: black;
+}
+
+.card-element {
+  padding: 5px;
+}
+
+.card-text {
+  padding: 10px;
+}
+
+.navbar-brand {
+  font-size: 32px;
+}
+
+.form-label {
+  display: block;
+  float: left;
+  width: 120px;
+  height: 15px;
+}

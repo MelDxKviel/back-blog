@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <article class="post card">
+        <h2 class="card-header">{{ post.title }}</h2>
+        <p class="card-text">{{ post.content|linebreaksbr }}</p>
+        <div class="card-footer">
+            <p>Author: {{ post.author }}</p>
+            <p>Category: {{ post.category }}</p>
+            <p>Published at:
+                <time class="date">
+                    {{ post.created_at }}
+                </time>
+            </p>
+            {% if request.user == post.author and request.user.is_authenticated %}
+                <a href="{% url "post_update" post.slug %}" class="btn btn-primary">Edit</a>
+            {% endif %}
+        </div>
+    </article>
+    {% if request.user.is_authenticated %}
+        <hr>
+        <div class="card">
+            <form method="post">
+                {% csrf_token %}
+                <div class="card-text">
+                    <label class="form-label">Text:</label>
+                    {{ form.text }}
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <input type="submit" value="Leave a comment" class="btn btn-primary full-width">
+                </div>
+            </form>
+
+        </div>
+    {% endif %}
+    {% if post.comments.last %}
+        <hr>
+        <div>
+            <h2>Comments:</h2>
+            {% for comment in post.comments.all %}
+                <div class="card comment">
+                    <h5 class="card-header mb-2">{{ comment.author }}</h5>
+                    <div class="card-body">
+                        <p class="card-text mb-2">{{ comment.text }}</p>
+                    </div>
+                    <div class="card-footer text-body-secondary" style="display: flex;">
+                        <time>{{ comment.created_at }}</time>
+                        {% if request.user == comment.author and request.user.is_authenticated %}
+                            <form method="POST" action="{% url "delete_comment" comment.pk %}"
+                                  style="padding-left: 10px;">
+                                {% csrf_token %}<input class="btn btn-danger" type="submit" value="DELETE">
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

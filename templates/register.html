@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container card" style="width: 40em;">
+        <form method="post" style="padding: 3px;" novalidate>
+            {% csrf_token %}
+            <h2 class="text-center">Sign up</h2>
+            <div class="center">
+                <label class="form-label">Username:</label>
+                {{ form.username }}
+            </div>
+            <div class="center">
+                <label class="form-label">Email:</label>
+                {{ form.email }}
+            </div>
+            <div class="center">
+                <label class="form-label">Password:</label>
+                {{ form.password1 }}
+            </div>
+            <div class="center">
+                <label class="form-label">Repeat password:</label>
+                {{ form.password2 }}
+            </div>
+            <div class="center">
+                <input type="submit" value="Register" class="btn btn-primary full-width">
+            </div>
+        </form>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock content %}

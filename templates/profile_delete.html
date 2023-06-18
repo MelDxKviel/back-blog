@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                <h4>Are you sure you want to delete your account?</h4>
+                <input type="submit" class="btn btn-danger" value="Confirm">
+                <a href="{% url "profile" %}" class="btn btn-primary">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}
