@@ -56,9 +56,3 @@ class PostTests(TestCase):
         self.assertContains(response, "This is a test!")
         self.assertContains(response, "Test test test")
         self.assertContains(response, "Test comment")
-
-    def test_spam_check(self):
-        self.assertTrue(spam_check("normal comment"))
-        self.assertTrue(spam_check(self.comment.text))
-        self.assertFalse(spam_check("comment with link https://www.google.com/"))
-        self.assertFalse(spam_check("comment with another link gmail.com"))

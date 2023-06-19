@@ -7,15 +7,21 @@
         <div class="card-footer">
             <p>Author: {{ post.author }}</p>
             <p>Category: {{ post.category }}</p>
+            {% if post.tags.all %}
+                <p>Tags: {{ post.get_tags }}</p>
+            {% endif %}
             <p>Published at:
                 <time class="date">
                     {{ post.created_at }}
                 </time>
             </p>
-            {% if request.user == post.author and request.user.is_authenticated %}
-                <a href="{% url "post_update" post.slug %}" class="btn btn-primary">Edit</a>
-            {% endif %}
+
         </div>
+        {% if request.user == post.author and request.user.is_authenticated %}
+            <div class="card-footer">
+                <a href="{% url "post_update" post.slug %}" class="btn btn-primary">Edit</a>
+            </div>
+        {% endif %}
     </article>
     {% if request.user.is_authenticated %}
         <hr>
@@ -51,7 +57,7 @@
                         <p class="card-text mb-2">{{ comment.text }}</p>
                     </div>
                     <div class="card-footer text-body-secondary" style="display: flex;">
-                        <time>{{ comment.created_at }}</time>
+                        <time class="me-auto mt-2 mt-lg-0">{{ comment.created_at }}</time>
                         {% if request.user == comment.author and request.user.is_authenticated %}
                             <form method="POST" action="{% url "delete_comment" comment.pk %}"
                                   style="padding-left: 10px;">

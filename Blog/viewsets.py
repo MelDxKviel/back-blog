@@ -1,11 +1,11 @@
 from typing import Type
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets, pagination, serializers
 
-from Blog.models import Post, Comment
+from Blog.models import Post, Comment, Category
 from .serializers import PostRetrieveSerializer, PostCreateSerializer, CommentsRetrieveSerializer, \
-    CommentsCreateSerializer
+    CommentsCreateSerializer, CategorySerializer
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -33,7 +33,10 @@ class CommentsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         post = self.request.query_params.get('post')
-        return Comment.objects.filter(post_id=post)
+        if post:
+            return Comment.objects.filter(post_id=post)
+        else:
+            return Comment.objects.all()
 
     def get_serializer_class(self) -> Type[serializers.ModelSerializer]:
         if self.action in {'create', 'update', 'partial_update'}:
@@ -45,6 +48,18 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in {'create', 'update', 'partial_update', 'delete'}:
             permissions = (IsAuthenticated(),)
+        else:
+            permissions = ()
+        return permissions
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get_permissions(self):
+        if self.action in {'create', 'update', 'partial_update', 'delete'}:
+            permissions = (IsAuthenticated(), IsAdminUser(),)
         else:
             permissions = ()
         return permissions

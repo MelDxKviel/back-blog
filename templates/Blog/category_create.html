@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <h2 class="text-center">Create a category:</h2>
+                <div class="center">
+                    <label class="form-label">Category name:</label>
+                    {{ form.category_name }}
+                </div>
+                <div class="center">
+                    <input type="submit" value="Create category" class="btn btn-primary full-width">
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

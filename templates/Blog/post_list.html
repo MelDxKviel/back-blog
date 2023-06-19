@@ -5,17 +5,20 @@
     {% if request.user.is_authenticated %}
         <a href="{% url 'post_create' %}" class="btn btn-primary">Create post</a>
     {% endif %}
+    {% if request.user.is_superuser %}
+        <a href="{% url 'category_create' %}" class="btn btn-success">Create category</a>
+    {% endif %}
+    {% if request.user.is_superuser %}
+        <a href="{% url 'tag_create' %}" class="btn btn-success">Create tag</a>
+    {% endif %}
 
     {% for post in page_obj %}
-
         <article class="post card">
             <h2 class="card-header"><a href="posts/{{ post.slug }}" class="post-title">{{ post.title }}</a></h2>
             <p class="card-element">{{ post.content|linebreaksbr }}</p>
             <time class="date card-footer">
                 {{ post.created_at }}
             </time>
-
-
         </article>
     {% endfor %}
 

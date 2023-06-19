@@ -27,7 +27,9 @@
 }
 
 .card-element {
-  padding: 5px;
+  padding-top: 5px;
+  padding-left: 15px;
+  padding-right: 8px;
 }
 
 .card-text {
@@ -36,11 +38,4 @@
 
 .navbar-brand {
   font-size: 32px;
-}
-
-.form-label {
-  display: block;
-  float: left;
-  width: 120px;
-  height: 15px;
 }

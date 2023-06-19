@@ -1,5 +1,3 @@
-import re
-
 from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.views import generic
@@ -7,14 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormMixin
 from django.utils.text import slugify
 
-from .models import Post, Comment
-from .forms import PostCreateForm, CommentForm
-
-
-def spam_check(text):
-    if re.search("(?P<url>https?://[^\s]+)", text) or re.search("(?P<domain>\w+\.\w{2,3})", text):
-        return False
-    return True
+from .models import Post, Comment, Category, Tag
+from .forms import PostCreateForm, CommentForm, CategoryCreateForm, TagCreateForm
+from .utils import spam_check
 
 
 class PostListView(generic.ListView):
@@ -77,7 +70,7 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     login_url = '/login/'
     form = PostCreateForm
     template_name = 'Blog/post_update.html'
-    fields = ['title', 'content', 'category', ]
+    fields = ['title', 'content', 'category', 'tags', ]
 
     def get_success_url(self):
         return f'/posts/{self.get_object().slug}'
@@ -120,3 +113,73 @@ class CommentDelete(LoginRequiredMixin, generic.DeleteView):
             return super().delete(request, *args, **kwargs)
         else:
             return HttpResponseForbidden("Cannot delete other's comments")
+
+
+class CategoryListView(generic.ListView):
+    queryset = Category.objects.all()
+    template_name = 'Blog/category_list.html'
+
+
+class CategoryCreateView(LoginRequiredMixin, generic.FormView):
+    model = Category
+    login_url = '/login/'
+    form_class = CategoryCreateForm
+    template_name = 'Blog/category_create.html'
+    success_url = '/posts'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("Only admins can add category")
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().post(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("Only admins can add category")
+
+    def form_valid(self, form):
+        category = Category.objects.create(
+            category_name=form.cleaned_data['category_name'],
+        )
+        return super(CategoryCreateView, self).form_valid(form)
+
+
+class CategoryDelete(LoginRequiredMixin, generic.DeleteView):
+    model = Category
+
+    def get_success_url(self):
+        return '/categories'
+
+    def delete(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().delete(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("Only admins can delete categories")
+
+
+class TagCreateView(LoginRequiredMixin, generic.FormView):
+    model = Tag
+    login_url = '/login/'
+    form_class = TagCreateForm
+    template_name = 'Blog/tag_create.html'
+    success_url = '/posts'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("Only admins can add tags")
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().post(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("Only admins can add tags")
+
+    def form_valid(self, form):
+        tag = Tag.objects.create(
+            tag_name=form.cleaned_data['tag_name'],
+        )
+        return super(TagCreateView, self).form_valid(form)

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if request.user.is_superuser %}
+        <a href="{% url 'category_create' %}" class="btn btn-success">Create category</a>
+    {% endif %}
+
+    {% for category in object_list %}
+
+        <article class="post card ">
+            <div class="card-header" style="display: flex;">
+                <h2 class="me-auto mt-2 mt-lg-0">{{ category.category_name }}</h2>
+                {% if request.user.is_superuser %}
+                    <form method="POST" action="{% url "delete_category" category.pk %}">
+                        {% csrf_token %}<input class="btn btn-danger" type="submit" value="DELETE">
+                    </form>
+                {% endif %}
+            </div>
+        </article>
+    {% endfor %}
+
+{% endblock %}
+
