@@ -62,6 +62,9 @@ class PostCreateView(LoginRequiredMixin, generic.FormView):
             category=form.cleaned_data['category'],
             author=self.request.user,
         )
+        for tag in form.cleaned_data['tags']:
+            post.tags.add(tag)
+        post.save()
         return super(PostCreateView, self).form_valid(form)
 
 

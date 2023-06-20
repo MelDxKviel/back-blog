@@ -40,9 +40,8 @@ class CommentsRetrieveSerializer(serializers.ModelSerializer):
 class CommentsCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('text',)
+        fields = ('text', 'post',)
 
     def create(self, validated_data):
         validated_data['author'] = self.context['request'].user
-        validated_data['post_id'] = self.context['request'].query_params.get('post')
         return super().create(validated_data)
