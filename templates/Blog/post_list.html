@@ -1,26 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="box d-flex p-2bo">
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'post_create' %}" class="btn btn-primary text-nowrap item">Create post</a>
+        {% endif %}
+        {% if request.user.is_superuser %}
+            <a href="{% url 'category_create' %}" class="btn btn-success text-nowrap item">Create category</a>
+        {% endif %}
+        {% if request.user.is_superuser %}
+            <a href="{% url 'tag_create' %}" class="btn btn-success text-nowrap item">Create tag</a>
+        {% endif %}
+        <div class="input-group input-group-sm item search">
+            <form class="input-group" action="" method="get">
+                <input type="submit" class="input-group-text" id="inputGroup-sizing-sm" value="Search">
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-sm" name="q">
+            </form>
+        </div>
+        <form action="" method="get" class="input-group item">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option>All</option>
+                {% for category in categories %}
+                    <option value={{ category }} {% if selected_category == category.category_name %} selected {% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
 
-    {% if request.user.is_authenticated %}
-        <a href="{% url 'post_create' %}" class="btn btn-primary">Create post</a>
+    {% if page_obj %}
+        {% for post in page_obj %}
+            <article class="post card">
+                <h2 class="card-header"><a href="posts/{{ post.slug }}" class="post-title">{{ post.title }}</a></h2>
+                <p class="card-element">{{ post.content|truncatechars:250 }}</p>
+                {% if post.image %}
+                    <div class="card-element image-item">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="image">
+                    </div>
+                {% endif %}
+                <time class="date card-footer">
+                    {{ post.created_at }}
+                </time>
+            </article>
+        {% endfor %}
+    {% else %}
+        <h2 class="center">No posts found</h2>
     {% endif %}
-    {% if request.user.is_superuser %}
-        <a href="{% url 'category_create' %}" class="btn btn-success">Create category</a>
-    {% endif %}
-    {% if request.user.is_superuser %}
-        <a href="{% url 'tag_create' %}" class="btn btn-success">Create tag</a>
-    {% endif %}
-
-    {% for post in page_obj %}
-        <article class="post card">
-            <h2 class="card-header"><a href="posts/{{ post.slug }}" class="post-title">{{ post.title }}</a></h2>
-            <p class="card-element">{{ post.content|linebreaksbr }}</p>
-            <time class="date card-footer">
-                {{ post.created_at }}
-            </time>
-        </article>
-    {% endfor %}
 
     <nav style="margin-top: 15px;">
         <ul class="pagination">

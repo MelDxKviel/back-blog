@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,8 +12,26 @@ from .utils import spam_check
 
 
 class PostListView(generic.ListView):
-    queryset = Post.objects.order_by('-created_at')
-    paginate_by = 3
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        category = self.request.GET.get('category')
+        if query:
+            queryset = Post.objects.filter(
+                Q(title__contains=query) | Q(content__contains=query)
+            ).order_by('-created_at')
+        else:
+            queryset = Post.objects.order_by('-created_at')
+        if category and category != "All":
+            queryset = queryset.filter(category__category_name=category)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        context["selected_category"] = self.request.GET.get('category')
+        return context
+
+    paginate_by = 5
     template_name = 'Blog/post_list.html'
 
 
@@ -22,7 +41,7 @@ class PostDetailView(generic.DetailView, FormMixin):
     form_class = CommentForm
 
     def get_success_url(self):
-        return f'/posts/{self.get_object().slug}'
+        return f'/posts/{self.get_object().slug}#comments'
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -44,7 +63,9 @@ class PostDetailView(generic.DetailView, FormMixin):
             return super(PostDetailView, self).form_valid(form)
         else:
             messages.error(self.request, 'Your comment is a spam')
-            return self.render_to_response(self.get_context_data(form=form))
+            context = self.get_context_data(form=form)
+            context['anchor'] = 'comment'
+            return self.render_to_response(context)
 
 
 class PostCreateView(LoginRequiredMixin, generic.FormView):
@@ -61,6 +82,8 @@ class PostCreateView(LoginRequiredMixin, generic.FormView):
             content=form.cleaned_data['content'],
             category=form.cleaned_data['category'],
             author=self.request.user,
+            image=form.cleaned_data.get('image')
+
         )
         for tag in form.cleaned_data['tags']:
             post.tags.add(tag)
@@ -71,9 +94,8 @@ class PostCreateView(LoginRequiredMixin, generic.FormView):
 class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Post
     login_url = '/login/'
-    form = PostCreateForm
+    form_class = PostCreateForm
     template_name = 'Blog/post_update.html'
-    fields = ['title', 'content', 'category', 'tags', ]
 
     def get_success_url(self):
         return f'/posts/{self.get_object().slug}'
@@ -89,6 +111,12 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
             return super().post(request, *args, **kwargs)
         else:
             return HttpResponseForbidden("Cannot edit other's posts")
+
+    # def get_form(self, *args, **kwargs):
+    #     form = super(PostUpdateView, self).get_form(*args, **kwargs)
+    #     form = PostCreateForm(data=form.data)
+    #     # form.field["title"].widget.attrs["class"] = "form-control"
+    #     return form
 
 
 class PostDeleteView(LoginRequiredMixin, generic.DeleteView):

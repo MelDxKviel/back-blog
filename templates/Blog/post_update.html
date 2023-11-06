@@ -2,34 +2,38 @@
 
 {% block content %}
     <div class="container card">
-        <form action="" method="post" novalidate>
-            {% csrf_token %}
-            <h2 class="text-center">Edit a post:</h2>
-            <div class="center">
-                <label class="form-label">Title:</label>
-                {{ form.title }}
-            </div>
-            <div class="center">
-                <label class="form-label">Content:</label>
-                {{ form.content }}
-            </div>
-            <div class="center">
-                <label class="form-label">Category:</label>
-                {{ form.category }}
-            </div>
-            <div class="center">
-                <label class="form-label">Tags:</label>
-                {{ form.tags }}
-            </div>
-            <div class="center">
-                <input type="submit" value="Update" class="btn btn-primary full-width">
-            </div>
-
-        </form>
-        <div class="center">
-            <form method="post" action="{% url "post_delete" post.slug %}">
-                {% csrf_token %}<input class="btn btn-danger " type="submit" value="Delete">
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h2 class="text-center">Edit a post:</h2>
+                <div class="center">
+                    <label class="form-label">Title:</label>
+                    {{ form.title }}
+                </div>
+                <div class="center">
+                    <label class="form-label">Content:</label>
+                    {{ form.content }}
+                </div>
+                <div class="center">
+                    {{ form.image }}
+                </div>
+                <div class="center">
+                    <label class="form-label">Category:</label>
+                    {{ form.category }}
+                </div>
+                <div class="center">
+                    <label class="form-label">Tags:</label>
+                    {{ form.tags }}
+                </div>
+                <div class="center">
+                    <input type="submit" value="Update" class="btn btn-primary full-width">
+                </div>
             </form>
+            <div class="center">
+                <form method="post" action="{% url "post_delete" post.slug %}">
+                    {% csrf_token %}<input class="btn btn-danger " type="submit" value="Delete">
+                </form>
+            </div>
         </div>
     </div>
 

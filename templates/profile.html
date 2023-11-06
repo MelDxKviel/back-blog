@@ -5,6 +5,7 @@
         <div>
             <h3 class="card-element">Username: {{ user.username }}</h3>
             <h3 class="card-element">Email: {{ user.email }}</h3>
+
             <div class="card-footer">
                 <a href="{% url "profile_edit" user.pk %}" class="btn btn-primary">Edit</a>
                 <a href="{% url "profile_changepass" %}" class="btn btn-primary">Change password</a>

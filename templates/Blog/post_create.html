@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container card">
         <div class="card-body">
-            <form method="post" novalidate>
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h2 class="text-center">Create a post:</h2>
                 <div class="center">
@@ -13,6 +13,9 @@
                 <div class="center">
                     <label class="form-label">Content:</label>
                     {{ form.content }}
+                </div>
+                <div class="center">
+                    {{ form.image }}
                 </div>
                 <div class="center">
                     <label class="form-label">Category:</label>

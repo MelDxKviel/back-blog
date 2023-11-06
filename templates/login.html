@@ -4,6 +4,7 @@
     <div class="container card" style="width: 35em;">
         <form method="post" novalidate>
             {% csrf_token %}
+
             <h2 class="text-center">Log in to your account</h2>
             <div class="center">
                 <label class="form-label">Username:</label>
@@ -15,6 +16,9 @@
             </div>
             <div class="center">
                 <input type="submit" value="Login" class="btn btn-primary full-width">
+            </div>
+            <div class="center">
+                <a href={% url 'password_reset' %}>Forgot password?</a>
             </div>
         </form>
         {% if messages %}

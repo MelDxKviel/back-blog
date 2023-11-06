@@ -1,5 +1,7 @@
+from django.conf.urls.static import static
 from django.urls import path
 
+from BackBlog import settings
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, CommentDelete, \
     CategoryCreateView, CategoryListView, CategoryDelete, TagCreateView
 
