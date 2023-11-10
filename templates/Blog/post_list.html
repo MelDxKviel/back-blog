@@ -35,7 +35,7 @@
                 <p class="card-element">{{ post.content|truncatechars:250 }}</p>
                 {% if post.image %}
                     <div class="card-element image-item">
-                        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="image">
+                        <img src="/media/{{ post.image.url }}" alt="{{ post.title }}" class="image">
                     </div>
                 {% endif %}
                 <time class="date card-footer">

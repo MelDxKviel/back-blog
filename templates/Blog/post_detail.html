@@ -6,7 +6,7 @@
         <p class="card-text">{{ post.content|linebreaksbr }}</p>
         {% if post.image %}
             <div class="card-element image-item">
-                <a href="{{ post.image.url  }}"><img src="{{ post.image.url }}" alt="{{ post.title }}" class="image"></a>
+                <a href="/media/{{ post.image.url }}"><img src="/media/{{ post.image.url }}" alt="{{ post.title }}" class="image"></a>
             </div>
         {% endif %}
         <div class="card-footer" id="comment" >
