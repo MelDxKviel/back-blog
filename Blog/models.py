@@ -1,8 +1,14 @@
 from datetime import datetime
+from io import BytesIO
+
+from PIL import Image
+from django.core.files.base import ContentFile
 
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+
+from Blog.fields import PNGField
 
 
 class Category(models.Model):
@@ -23,7 +29,7 @@ class Post(models.Model):
     title = models.CharField(max_length=120)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Slug")
     content = models.TextField()
-    image = models.ImageField(blank=True, null=True)
+    image = PNGField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="blog_posts")

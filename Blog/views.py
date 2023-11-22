@@ -83,7 +83,6 @@ class PostCreateView(LoginRequiredMixin, generic.FormView):
             category=form.cleaned_data['category'],
             author=self.request.user,
             image=form.cleaned_data.get('image')
-
         )
         for tag in form.cleaned_data['tags']:
             post.tags.add(tag)
