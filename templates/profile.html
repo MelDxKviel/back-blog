@@ -3,8 +3,8 @@
 {% block content %}
     <div class="card">
         <div>
-            <h3 class="card-element">Username: {{ user.username }}</h3>
-            <h3 class="card-element">Email: {{ user.email }}</h3>
+            <h3 name="username" class="card-element">Username: {{ user.username }}</h3>
+            <h3 name="email" class="card-element">Email: {{ user.email }}</h3>
 
             <div class="card-footer">
                 <a href="{% url "profile_edit" user.pk %}" class="btn btn-primary">Edit</a>
